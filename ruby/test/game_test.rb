@@ -1,11 +1,10 @@
-require 'active_support/all'
-require_relative 'test_helper'
+require 'test/unit'
 require_relative '../lib/ugly_trivia/game'
 
-describe 'one test' do
-  it 'should pass' do
+class GameTest < Test::Unit::TestCase
+  def test_it_works
     game = UglyTrivia::Game.new
-    expected = <<-STRING.strip_heredoc
+    expected = <<~STRING
       Chet was added
       They are player number 1
       Pat was added
