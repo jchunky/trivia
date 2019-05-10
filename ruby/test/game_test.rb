@@ -1,5 +1,5 @@
 require 'test/unit'
-require_relative '../lib/ugly_trivia/game'
+require_relative '../lib/game'
 
 class GameTest < Test::Unit::TestCase
   def test_it_works
