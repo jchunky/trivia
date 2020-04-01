@@ -1,4 +1,5 @@
 require 'test/unit'
+require 'stringio'
 require_relative 'game'
 
 class GameTest < Test::Unit::TestCase
