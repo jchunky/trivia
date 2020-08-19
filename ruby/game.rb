@@ -1,10 +1,10 @@
 module UglyTrivia
+  class Player < Struct.new(:name, :place, :purse, :in_penalty_box)
+  end
+
   class Game
     def initialize
       @players = []
-      @places = Array.new(6, 0)
-      @purses = Array.new(6, 0)
-      @in_penalty_box = Array.new(6, nil)
 
       @questions = {
         "Pop" => 0,
@@ -13,7 +13,6 @@ module UglyTrivia
         "Rock" => 0,
       }
 
-      @current_player = 0
       @is_getting_out_of_penalty_box = false
     end
 
@@ -22,10 +21,7 @@ module UglyTrivia
     end
 
     def add(player_name)
-      @players.push player_name
-      @places[how_many_players] = 0
-      @purses[how_many_players] = 0
-      @in_penalty_box[how_many_players] = false
+      @players << Player.new(player_name, 0, 0, false)
 
       puts "#{player_name} was added"
       puts "They are player number #{@players.length}"
@@ -38,31 +34,31 @@ module UglyTrivia
     end
 
     def roll(roll)
-      puts "#{@players[@current_player]} is the current player"
+      puts "#{current_player.name} is the current player"
       puts "They have rolled a #{roll}"
 
-      if @in_penalty_box[@current_player]
+      if current_player.in_penalty_box
         if roll.odd?
           @is_getting_out_of_penalty_box = true
 
-          puts "#{@players[@current_player]} is getting out of the penalty box"
-          @places[@current_player] += roll
-          @places[@current_player] %= 12
+          puts "#{current_player.name} is getting out of the penalty box"
+          current_player.place += roll
+          current_player.place %= 12
 
-          puts "#{@players[@current_player]}'s new location is #{@places[@current_player]}"
+          puts "#{current_player.name}'s new location is #{current_player.place}"
           puts "The category is #{current_category}"
           ask_question
         else
-          puts "#{@players[@current_player]} is not getting out of the penalty box"
+          puts "#{current_player.name} is not getting out of the penalty box"
           @is_getting_out_of_penalty_box = false
         end
 
       else
 
-        @places[@current_player] += roll
-        @places[@current_player] %= 12
+        current_player.place += roll
+        current_player.place %= 12
 
-        puts "#{@players[@current_player]}'s new location is #{@places[@current_player]}"
+        puts "#{current_player.name}'s new location is #{current_player.place}"
         puts "The category is #{current_category}"
         ask_question
       end
@@ -74,36 +70,33 @@ module UglyTrivia
     end
 
     def current_category
-      @questions.keys[@places[@current_player] % @questions.keys.size]
+      @questions.keys[current_player.place % @questions.keys.size]
     end
 
     def was_correctly_answered
-      if @in_penalty_box[@current_player]
+      if current_player.in_penalty_box
         if @is_getting_out_of_penalty_box
           puts "Answer was correct!!!!"
-          @purses[@current_player] += 1
-          puts "#{@players[@current_player]} now has #{@purses[@current_player]} Gold Coins."
+          current_player.purse += 1
+          puts "#{current_player.name} now has #{current_player.purse} Gold Coins."
 
           winner = did_player_win
-          @current_player += 1
-          @current_player = 0 if @current_player == @players.length
+          rotate_to_next_player
 
           winner
         else
-          @current_player += 1
-          @current_player = 0 if @current_player == @players.length
+          rotate_to_next_player
           true
         end
 
       else
 
         puts "Answer was corrent!!!!"
-        @purses[@current_player] += 1
-        puts "#{@players[@current_player]} now has #{@purses[@current_player]} Gold Coins."
+        current_player.purse += 1
+        puts "#{current_player.name} now has #{current_player.purse} Gold Coins."
 
         winner = did_player_win
-        @current_player += 1
-        @current_player = 0 if @current_player == @players.length
+        rotate_to_next_player
 
         winner
       end
@@ -111,16 +104,23 @@ module UglyTrivia
 
     def wrong_answer
       puts "Question was incorrectly answered"
-      puts "#{@players[@current_player]} was sent to the penalty box"
-      @in_penalty_box[@current_player] = true
+      puts "#{current_player.name} was sent to the penalty box"
+      current_player.in_penalty_box = true
 
-      @current_player += 1
-      @current_player = 0 if @current_player == @players.length
+      rotate_to_next_player
       true
     end
 
+    def rotate_to_next_player
+      @players.rotate!
+    end
+
     def did_player_win
-      @purses[@current_player] != 6
+      current_player.purse != 6
+    end
+
+    def current_player
+      @players.first
     end
   end
 end
