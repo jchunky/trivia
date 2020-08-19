@@ -21,8 +21,6 @@ module UglyTrivia
 
       puts "#{player_name} was added"
       puts "They are player number #{@players.length}"
-
-      true
     end
 
     def roll(roll)
@@ -44,9 +42,7 @@ module UglyTrivia
           puts "#{current_player.name} is not getting out of the penalty box"
           @is_getting_out_of_penalty_box = false
         end
-
       else
-
         current_player.place += roll
         current_player.place %= 12
 
@@ -62,27 +58,14 @@ module UglyTrivia
           puts "Answer was correct!!!!"
           current_player.purse += 1
           puts "#{current_player.name} now has #{current_player.purse} Gold Coins."
-
-          winner = did_player_win
-          rotate_to_next_player
-
-          winner
-        else
-          rotate_to_next_player
-          true
         end
-
       else
-
         puts "Answer was corrent!!!!"
         current_player.purse += 1
         puts "#{current_player.name} now has #{current_player.purse} Gold Coins."
-
-        winner = did_player_win
-        rotate_to_next_player
-
-        winner
       end
+      rotate_to_next_player
+      !winner?
     end
 
     def wrong_answer
@@ -91,18 +74,10 @@ module UglyTrivia
       current_player.in_penalty_box = true
 
       rotate_to_next_player
-      true
+      !winner?
     end
 
     private
-
-    def is_playable?
-      how_many_players >= 2
-    end
-
-    def how_many_players
-      @players.length
-    end
 
     def ask_question
       puts "#{current_category} Question #{@questions[current_category]}"
@@ -117,8 +92,8 @@ module UglyTrivia
       @players.rotate!
     end
 
-    def did_player_win
-      current_player.purse != 6
+    def winner?
+      @players.any? { |p| p.purse >= 6 }
     end
 
     def current_player
