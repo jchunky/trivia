@@ -16,10 +16,6 @@ module UglyTrivia
       @is_getting_out_of_penalty_box = false
     end
 
-    def is_playable?
-      how_many_players >= 2
-    end
-
     def add(player_name)
       @players << Player.new(player_name, 0, 0, false)
 
@@ -27,10 +23,6 @@ module UglyTrivia
       puts "They are player number #{@players.length}"
 
       true
-    end
-
-    def how_many_players
-      @players.length
     end
 
     def roll(roll)
@@ -62,15 +54,6 @@ module UglyTrivia
         puts "The category is #{current_category}"
         ask_question
       end
-    end
-
-    def ask_question
-      puts "#{current_category} Question #{@questions[current_category]}"
-      @questions[current_category] += 1
-    end
-
-    def current_category
-      @questions.keys[current_player.place % @questions.keys.size]
     end
 
     def was_correctly_answered
@@ -109,6 +92,25 @@ module UglyTrivia
 
       rotate_to_next_player
       true
+    end
+
+    private
+
+    def is_playable?
+      how_many_players >= 2
+    end
+
+    def how_many_players
+      @players.length
+    end
+
+    def ask_question
+      puts "#{current_category} Question #{@questions[current_category]}"
+      @questions[current_category] += 1
+    end
+
+    def current_category
+      @questions.keys[current_player.place % @questions.keys.size]
     end
 
     def rotate_to_next_player
