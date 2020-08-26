@@ -1,14 +1,13 @@
-module UglyTrivia
-  Player = Struct.new(:name, :place, :purse, :in_penalty_box) do
-    def winner?
-      purse >= 6
-    end
-  end
+require_relative "output"
+require_relative "player"
 
+module UglyTrivia
   class Game
+    attr_reader :players, :output, :questions
+
     def initialize
       @players = []
-
+      @output = Output.new(self)
       @questions = {
         "Pop" => 0,
         "Science" => 0,
@@ -18,25 +17,20 @@ module UglyTrivia
     end
 
     def add(player_name)
-      @players << Player.new(player_name, 0, 0, false)
+      players << Player.new(player_name, 0, 0, false)
 
-      puts "#{player_name} was added"
-      puts "They are player number #{@players.length}"
+      output.notify_new_player(players.last)
     end
 
     def roll(roll)
-      puts "#{current_player.name} is the current player"
-      puts "They have rolled a #{roll}"
-
+      output.notify_player_roll(roll)
       exit_penalty_box_if_able(roll)
-
       return if current_player.in_penalty_box
 
-      current_player.place += roll
-      current_player.place %= 12
+      current_player.location += roll
+      current_player.location %= 12
 
-      puts "#{current_player.name}'s new location is #{current_player.place}"
-      puts "The category is #{current_category}"
+      output.notify_new_category
       ask_question
     end
 
@@ -46,40 +40,42 @@ module UglyTrivia
       if roll.odd?
         current_player.in_penalty_box = false
 
-        puts "#{current_player.name} is getting out of the penalty box"
+        output.notify_getting_out_of_penalty_box
       else
-        puts "#{current_player.name} is not getting out of the penalty box"
+        output.notify_remaining_in_penalty_box
       end
     end
 
     def was_correctly_answered
       unless current_player.in_penalty_box
-        puts "Answer was corrent!!!!"
         current_player.purse += 1
-        puts "#{current_player.name} now has #{current_player.purse} Gold Coins."
+        output.notify_correct_answer
       end
       rotate_to_next_player
       !winner?
     end
 
     def wrong_answer
-      puts "Question was incorrectly answered"
-      puts "#{current_player.name} was sent to the penalty box"
+      output.notify_incorrect_answer
       current_player.in_penalty_box = true
 
       rotate_to_next_player
       !winner?
     end
 
-    private
-
-    def ask_question
-      puts "#{current_category} Question #{@questions[current_category]}"
-      @questions[current_category] += 1
+    def current_player
+      @players.first
     end
 
     def current_category
-      @questions.keys[current_player.place % @questions.keys.size]
+      questions.keys[current_player.location % questions.keys.size]
+    end
+
+    private
+
+    def ask_question
+      output.notify_new_question
+      questions[current_category] += 1
     end
 
     def rotate_to_next_player
@@ -88,10 +84,6 @@ module UglyTrivia
 
     def winner?
       @players.any?(&:winner?)
-    end
-
-    def current_player
-      @players.first
     end
   end
 end
