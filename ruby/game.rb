@@ -1,5 +1,8 @@
 module UglyTrivia
-  class Player < Struct.new(:name, :place, :purse, :in_penalty_box)
+  Player = Struct.new(:name, :place, :purse, :in_penalty_box) do
+    def winner?
+      purse >= 6
+    end
   end
 
   class Game
@@ -12,8 +15,6 @@ module UglyTrivia
         "Sports" => 0,
         "Rock" => 0,
       }
-
-      @is_getting_out_of_penalty_box = false
     end
 
     def add(player_name)
@@ -27,39 +28,32 @@ module UglyTrivia
       puts "#{current_player.name} is the current player"
       puts "They have rolled a #{roll}"
 
-      if current_player.in_penalty_box
-        if roll.odd?
-          @is_getting_out_of_penalty_box = true
+      exit_penalty_box_if_able(roll)
 
-          puts "#{current_player.name} is getting out of the penalty box"
-          current_player.place += roll
-          current_player.place %= 12
+      return if current_player.in_penalty_box
 
-          puts "#{current_player.name}'s new location is #{current_player.place}"
-          puts "The category is #{current_category}"
-          ask_question
-        else
-          puts "#{current_player.name} is not getting out of the penalty box"
-          @is_getting_out_of_penalty_box = false
-        end
+      current_player.place += roll
+      current_player.place %= 12
+
+      puts "#{current_player.name}'s new location is #{current_player.place}"
+      puts "The category is #{current_category}"
+      ask_question
+    end
+
+    def exit_penalty_box_if_able(roll)
+      return unless current_player.in_penalty_box
+
+      if roll.odd?
+        current_player.in_penalty_box = false
+
+        puts "#{current_player.name} is getting out of the penalty box"
       else
-        current_player.place += roll
-        current_player.place %= 12
-
-        puts "#{current_player.name}'s new location is #{current_player.place}"
-        puts "The category is #{current_category}"
-        ask_question
+        puts "#{current_player.name} is not getting out of the penalty box"
       end
     end
 
     def was_correctly_answered
-      if current_player.in_penalty_box
-        if @is_getting_out_of_penalty_box
-          puts "Answer was correct!!!!"
-          current_player.purse += 1
-          puts "#{current_player.name} now has #{current_player.purse} Gold Coins."
-        end
-      else
+      unless current_player.in_penalty_box
         puts "Answer was corrent!!!!"
         current_player.purse += 1
         puts "#{current_player.name} now has #{current_player.purse} Gold Coins."
@@ -93,7 +87,7 @@ module UglyTrivia
     end
 
     def winner?
-      @players.any? { |p| p.purse >= 6 }
+      @players.any?(&:winner?)
     end
 
     def current_player
