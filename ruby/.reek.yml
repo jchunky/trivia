@@ -1,0 +1,11 @@
+detectors:
+  DuplicateMethodCall:
+    enabled: false
+  IrresponsibleModule:
+    enabled: false
+  UncommunicativeModuleName:
+    enabled: false
+  UncommunicativeParameterName:
+    enabled: false
+  UncommunicativeVariableName:
+    enabled: false

@@ -8,9 +8,6 @@ Layout/ExtraSpacing:
   AllowForAlignment: false
 Layout/HeredocArgumentClosingParenthesis:
   Enabled: true
-Style/BlockDelimiters:
-  EnforcedStyle: semantic
-  AllowBracesOnProceduralOneLiners: true
 Style/CollectionMethods:
   Enabled: true
 Style/StringLiterals:
@@ -61,6 +58,8 @@ Style/TrailingCommaInHashLiteral:
 # Disable annoyances
 Layout/LineLength:
   Enabled: false
+Lint/UselessAccessModifier:
+  Enabled: false
 Metrics:
   Enabled: false
 Naming/MethodParameterName:
@@ -80,6 +79,8 @@ Style/MutableConstant:
 Style/NumericPredicate:
   Enabled: false
 Style/ParallelAssignment:
+  Enabled: false
+Style/RescueModifier:
   Enabled: false
 Style/StructInheritance:
   Enabled: false
