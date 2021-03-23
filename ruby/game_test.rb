@@ -1,6 +1,6 @@
 require "test/unit"
 require "stringio"
-require_relative "game"
+require_relative "lib/game"
 
 class GameTest < Test::Unit::TestCase
   def test_it_works
