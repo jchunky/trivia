@@ -33,7 +33,8 @@ module UglyTrivia
       current_player.location %= 12
       puts "#{current_player.name}'s new location is #{current_player.location}"
       puts "The category is #{current_category}"
-      ask_question
+      puts "#{current_category} Question #{questions[current_category]}"
+      questions[current_category] += 1
     end
 
     def check_whether_player_is_exiting_penalty_box(roll)
@@ -77,19 +78,6 @@ module UglyTrivia
 
     def winner?
       players.any?(&:winner?)
-    end
-
-    def is_playable?
-      how_many_players >= 2
-    end
-
-    def how_many_players
-      players.length
-    end
-
-    def ask_question
-      puts "#{current_category} Question #{questions[current_category]}"
-      questions[current_category] += 1
     end
 
     def current_category
