@@ -1,13 +1,14 @@
+require_relative "category"
 require_relative "game_displayer"
 require_relative "player"
 
 module UglyTrivia
   class Game
-    attr_reader :players, :questions
+    attr_reader :players, :categories
 
     def initialize
       @players = []
-      @questions = %w[Pop Science Sports Rock].map { |q| [q, 0] }.to_h
+      @categories = %w[Pop Science Sports Rock].map { |c| Category.new(c) }
     end
 
     def add(player_name)
@@ -23,7 +24,6 @@ module UglyTrivia
       current_player.location += roll
       current_player.location %= 12
       output.ask_player_question
-      questions[current_category] += 1
     end
 
     def check_whether_player_exiting_penalty_box(roll)
@@ -58,7 +58,7 @@ module UglyTrivia
     end
 
     def current_category
-      questions.keys[current_player.location % 4]
+      categories[current_player.location % categories.size]
     end
 
     private

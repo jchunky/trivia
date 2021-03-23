@@ -14,7 +14,7 @@ class GameDisplayer < SimpleDelegator
   def ask_player_question
     puts "#{current_player.name}'s new location is #{current_player.location}"
     puts "The category is #{current_category}"
-    puts "#{current_category} Question #{questions[current_category]}"
+    puts current_category.next_question
   end
 
   def player_stays_in_penalty_box
