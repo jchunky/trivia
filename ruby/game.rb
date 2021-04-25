@@ -39,17 +39,6 @@ module UglyTrivia
       questions[current_category] += 1
     end
 
-    def check_if_leaving_penalty_box(roll)
-      return unless current_player.in_penalty_box
-
-      if roll.odd?
-        current_player.in_penalty_box = false
-        puts "#{current_player.name} is getting out of the penalty box"
-      else
-        puts "#{current_player.name} is not getting out of the penalty box"
-      end
-    end
-
     def was_correctly_answered
       unless current_player.in_penalty_box
         puts "Answer was correct!!!!"
@@ -69,6 +58,17 @@ module UglyTrivia
     end
 
     private
+
+    def check_if_leaving_penalty_box(roll)
+      return unless current_player.in_penalty_box
+
+      if roll.odd?
+        current_player.in_penalty_box = false
+        puts "#{current_player.name} is getting out of the penalty box"
+      else
+        puts "#{current_player.name} is not getting out of the penalty box"
+      end
+    end
 
     def current_player
       players.first
