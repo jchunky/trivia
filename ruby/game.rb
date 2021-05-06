@@ -64,10 +64,9 @@ module UglyTrivia
 
       current_player.advance_location(roll)
       category = categories.category_at_location(current_player.location)
-      question = category.next_question
       puts "#{current_player.name}'s new location is #{current_player.location}"
       puts "The category is #{category}"
-      puts question
+      puts category.next_question
     end
 
     def was_correctly_answered
