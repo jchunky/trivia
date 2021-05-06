@@ -1,5 +1,5 @@
 module UglyTrivia
-  class Player < Struct.new(:name, :place, :purse, :in_penalty_box)
+  class Player < Struct.new(:name, :location, :purse, :in_penalty_box)
     def initialize(name)
       super(name, 0, 0, false)
     end
@@ -7,16 +7,47 @@ module UglyTrivia
     def winner?
       purse >= 6
     end
+
+    def advance_location(roll)
+      self.location += roll
+      self.location %= 12
+    end
+  end
+
+  class Category < Struct.new(:name, :index)
+    alias to_s name
+
+    def initialize(name)
+      super(name, 0)
+    end
+
+    def next_question
+      result = "#{name} Question #{index}"
+      self.index += 1
+      result
+    end
+  end
+
+  class Categories
+    CATEGORIES = %w[Pop Science Sports Rock]
+
+    attr_reader :categories
+
+    def initialize
+      @categories = CATEGORIES.map { |category_name| Category.new(category_name) }
+    end
+
+    def category_at_location(location)
+      categories[location % categories.count]
+    end
   end
 
   class Game
-    CATEGORIES = %w[Pop Science Sports Rock]
-
-    attr_reader :players
+    attr_reader :categories, :players
 
     def initialize
       @players = []
-      @questions = CATEGORIES.map { |category| [category, 0] }.to_h
+      @categories = Categories.new
     end
 
     def add(player_name)
@@ -31,19 +62,18 @@ module UglyTrivia
       check_whether_player_exiting_penalty_box(roll)
       return if current_player.in_penalty_box
 
-      current_player.place += roll
-      current_player.place %= 12
-      puts "#{current_player.name}'s new location is #{current_player.place}"
-      puts "The category is #{current_category}"
-      question_number = @questions[current_category]
-      puts "#{current_category} Question #{question_number}"
-      @questions[current_category] += 1
+      current_player.advance_location(roll)
+      category = categories.category_at_location(current_player.location)
+      question = category.next_question
+      puts "#{current_player.name}'s new location is #{current_player.location}"
+      puts "The category is #{category}"
+      puts question
     end
 
     def was_correctly_answered
       unless current_player.in_penalty_box
-        puts "Answer was correct!!!!"
         current_player.purse += 1
+        puts "Answer was correct!!!!"
         puts "#{current_player.name} now has #{current_player.purse} Gold Coins."
       end
       advance_to_next_player
@@ -75,16 +105,12 @@ module UglyTrivia
       players.rotate!
     end
 
-    def current_player
-      players.first
-    end
-
     def game_over?
       players.any?(:winner?)
     end
 
-    def current_category
-      CATEGORIES[current_player.place % CATEGORIES.count]
+    def current_player
+      players.first
     end
   end
 end
