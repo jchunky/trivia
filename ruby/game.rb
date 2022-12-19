@@ -81,7 +81,7 @@ module UglyTrivia
       puts "#{current_player.name} was sent to the penalty box"
       current_player.enter_penalty_box
       advance_to_next_player
-      !winner?
+      continue_game?
     end
 
     def was_correctly_answered
@@ -91,7 +91,7 @@ module UglyTrivia
         puts "#{current_player.name} now has #{current_player.purse} Gold Coins."
       end
       advance_to_next_player
-      !winner?
+      continue_game?
     end
 
     private
@@ -115,8 +115,8 @@ module UglyTrivia
       players.rotate!
     end
 
-    def winner?
-      players.any?(:win?)
+    def continue_game?
+      players.none?(:win?)
     end
   end
 end
