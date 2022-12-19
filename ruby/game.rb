@@ -6,7 +6,7 @@ module UglyTrivia
       super(name, 0, 0, false)
     end
 
-    def move_to_location(roll)
+    def advance_location(roll)
       self.location += roll
       self.location %= 12
     end
@@ -70,7 +70,7 @@ module UglyTrivia
       check_if_player_leaving_penalty_box(roll)
       return if current_player.in_penalty_box
 
-      current_player.move_to_location(roll)
+      current_player.advance_location(roll)
       puts "#{current_player.name}'s new location is #{current_player.location}"
       puts "The category is #{current_category}"
       puts questions.next_question_for(current_category)
