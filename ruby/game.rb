@@ -1,3 +1,5 @@
+require "active_support/all"
+
 module UglyTrivia
   class Player < Struct.new(:name, :location, :purse, :in_penalty_box)
     def initialize(name)
@@ -24,12 +26,18 @@ module UglyTrivia
     def leave_penalty_box
       self.in_penalty_box = false
     end
+
+    def current_category
+      Game::CATEGORIES[location % 4]
+    end
   end
 
   class Game
     CATEGORIES = %w[Pop Science Sports Rock]
 
     attr_reader :players, :question_index
+
+    delegate :current_category, to: :current_player
 
     def initialize
       @players = []
@@ -59,7 +67,7 @@ module UglyTrivia
       puts "#{current_player.name} was sent to the penalty box"
       current_player.enter_penalty_box
       advance_to_next_player
-      !winner
+      !winner?
     end
 
     def was_correctly_answered
@@ -69,7 +77,7 @@ module UglyTrivia
         puts "#{current_player.name} now has #{current_player.purse} Gold Coins."
       end
       advance_to_next_player
-      !winner
+      !winner?
     end
 
     private
@@ -90,10 +98,6 @@ module UglyTrivia
       question_index[current_category] += 1
     end
 
-    def current_category
-      CATEGORIES[current_player.location % 4]
-    end
-
     def current_player
       players.first
     end
@@ -102,7 +106,7 @@ module UglyTrivia
       players.rotate!
     end
 
-    def winner
+    def winner?
       players.any?(:win?)
     end
   end
