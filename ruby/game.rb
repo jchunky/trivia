@@ -30,7 +30,7 @@ module UglyTrivia
     end
 
     def current_category
-      Game::CATEGORIES[location % 4]
+      Game::CATEGORIES[location % Game::CATEGORIES.size]
     end
   end
 
