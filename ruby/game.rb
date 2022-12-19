@@ -2,6 +2,8 @@ require "active_support/all"
 
 module UglyTrivia
   class Player < Struct.new(:name, :location, :purse, :in_penalty_box)
+    alias to_s name
+
     def initialize(name)
       super(name, 0, 0, false)
     end
@@ -65,20 +67,20 @@ module UglyTrivia
     end
 
     def roll(roll)
-      puts "#{current_player.name} is the current player"
+      puts "#{current_player} is the current player"
       puts "They have rolled a #{roll}"
       check_if_player_leaving_penalty_box(roll)
       return if current_player.in_penalty_box
 
       current_player.advance_location(roll)
-      puts "#{current_player.name}'s new location is #{current_player.location}"
+      puts "#{current_player}'s new location is #{current_player.location}"
       puts "The category is #{current_category}"
       puts questions.next_question_for(current_category)
     end
 
     def wrong_answer
       puts "Question was incorrectly answered"
-      puts "#{current_player.name} was sent to the penalty box"
+      puts "#{current_player} was sent to the penalty box"
       current_player.enter_penalty_box
       advance_to_next_player
       continue_game?
@@ -88,7 +90,7 @@ module UglyTrivia
       unless current_player.in_penalty_box
         puts "Answer was corrent!!!!"
         current_player.answer_correctly
-        puts "#{current_player.name} now has #{current_player.purse} Gold Coins."
+        puts "#{current_player} now has #{current_player.purse} Gold Coins."
       end
       advance_to_next_player
       continue_game?
@@ -101,9 +103,9 @@ module UglyTrivia
 
       if roll.odd?
         current_player.leave_penalty_box
-        puts "#{current_player.name} is getting out of the penalty box"
+        puts "#{current_player} is getting out of the penalty box"
       else
-        puts "#{current_player.name} is not getting out of the penalty box"
+        puts "#{current_player} is not getting out of the penalty box"
       end
     end
 
