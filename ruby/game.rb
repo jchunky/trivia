@@ -36,7 +36,7 @@ module UglyTrivia
     attr_reader :question_index
 
     def initialize
-      @question_index = Game::CATEGORIES.to_h { |c| [c, 0] }
+      @question_index = Hash.new { |hash, key| hash[key] = 0 }
     end
 
     def next_question_for(category)
