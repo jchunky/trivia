@@ -33,15 +33,15 @@ module UglyTrivia
   end
 
   class Questions
-    attr_reader :question_index
+    attr_reader :index
 
     def initialize
-      @question_index = Hash.new { |hash, key| hash[key] = 0 }
+      @index = Hash.new { |hash, key| hash[key] = 0 }
     end
 
     def next_question_for(category)
-      result = "#{category} Question #{question_index[category]}"
-      question_index[category] += 1
+      result = "#{category} Question #{index[category]}"
+      index[category] += 1
       result
     end
   end
@@ -73,7 +73,7 @@ module UglyTrivia
       current_player.move_to_location(roll)
       puts "#{current_player.name}'s new location is #{current_player.location}"
       puts "The category is #{current_category}"
-      ask_question
+      puts questions.next_question_for(current_category)
     end
 
     def wrong_answer
@@ -105,10 +105,6 @@ module UglyTrivia
       else
         puts "#{current_player.name} is not getting out of the penalty box"
       end
-    end
-
-    def ask_question
-      puts questions.next_question_for(current_category)
     end
 
     def current_player
