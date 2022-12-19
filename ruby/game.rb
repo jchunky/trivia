@@ -32,16 +32,30 @@ module UglyTrivia
     end
   end
 
+  class Questions
+    attr_reader :question_index
+
+    def initialize
+      @question_index = Game::CATEGORIES.to_h { |c| [c, 0] }
+    end
+
+    def next_question_for(category)
+      result = "#{category} Question #{question_index[category]}"
+      question_index[category] += 1
+      result
+    end
+  end
+
   class Game
     CATEGORIES = %w[Pop Science Sports Rock]
 
-    attr_reader :players, :question_index
+    attr_reader :players, :questions
 
     delegate :current_category, to: :current_player
 
     def initialize
       @players = []
-      @question_index = CATEGORIES.to_h { |c| [c, 0] }
+      @questions = Questions.new
     end
 
     def add(player_name)
@@ -94,8 +108,7 @@ module UglyTrivia
     end
 
     def ask_question
-      puts "#{current_category} Question #{question_index[current_category]}"
-      question_index[current_category] += 1
+      puts questions.next_question_for(current_category)
     end
 
     def current_player
