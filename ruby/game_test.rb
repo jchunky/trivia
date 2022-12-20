@@ -1,6 +1,6 @@
-require 'test/unit'
-require 'stringio'
-require_relative 'game'
+require "test/unit"
+require "stringio"
+require_relative "game"
 
 class GameTest < Test::Unit::TestCase
   def test_it_works
@@ -115,9 +115,9 @@ class GameTest < Test::Unit::TestCase
     STRING
 
     output = capture do
-      game.add('Chet')
-      game.add('Pat')
-      game.add('Sue')
+      game.add("Chet")
+      game.add("Pat")
+      game.add("Sue")
 
       game.roll(6)
       game.was_correctly_answered
