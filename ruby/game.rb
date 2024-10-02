@@ -10,11 +10,13 @@ module UglyTrivia
   end
 
   class Game
+    QUESTION_CATEGORIES = %w[Pop Science Sports Rock]
+
     attr_reader :players, :questions
 
     def initialize
       @players = []
-      @questions = %w[Pop Science Sports Rock].to_h { |c| [c, 0] }
+      @questions = Hash.new(0)
       @is_getting_out_of_penalty_box = false
     end
 
@@ -82,17 +84,13 @@ module UglyTrivia
       players.rotate!
     end
 
-    def create_rock_question(index)
-      "Rock Question #{index}"
-    end
-
     def ask_question
       puts "#{current_category} Question #{questions[current_category]}"
       questions[current_category] += 1
     end
 
     def current_category
-      questions.keys[current_player.place % 4]
+      QUESTION_CATEGORIES[current_player.place % 4]
     end
 
     def winner?
