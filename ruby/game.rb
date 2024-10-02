@@ -10,6 +10,8 @@ module UglyTrivia
   end
 
   class Game
+    attr_reader :players, :questions
+
     def initialize
       @players = []
       @questions = %w[Pop Science Sports Rock].to_h { |c| [c, 0] }
@@ -17,9 +19,9 @@ module UglyTrivia
     end
 
     def add(player_name)
-      @players << Player.new(player_name)
+      players << Player.new(player_name)
       puts "#{player_name} was added"
-      puts "They are player number #{@players.count}"
+      puts "They are player number #{players.count}"
     end
 
     def roll(roll)
@@ -77,7 +79,7 @@ module UglyTrivia
     private
 
     def advance_to_next_player
-      @players.rotate!
+      players.rotate!
     end
 
     def create_rock_question(index)
@@ -85,20 +87,20 @@ module UglyTrivia
     end
 
     def ask_question
-      puts "#{current_category} Question #{@questions[current_category]}"
-      @questions[current_category] += 1
+      puts "#{current_category} Question #{questions[current_category]}"
+      questions[current_category] += 1
     end
 
     def current_category
-      @questions.keys[current_player.place % 4]
+      questions.keys[current_player.place % 4]
     end
 
     def win?
-      @players.any?(&:winner?)
+      players.any?(&:winner?)
     end
 
     def current_player
-      @players.first
+      players.first
     end
   end
 end
