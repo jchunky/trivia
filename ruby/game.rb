@@ -12,7 +12,7 @@ module UglyTrivia
       self.in_penalty_box = false
     end
 
-    def gets_money
+    def earns_money
       self.purse += 1
     end
 
@@ -20,9 +20,8 @@ module UglyTrivia
       purse >= 6
     end
 
-    def go_to_next_location(roll)
-      self.place += roll
-      self.place %= 12
+    def move(roll)
+      self.place = (place + roll) % 12
     end
 
     def current_category
@@ -63,43 +62,46 @@ module UglyTrivia
     def roll(roll)
       puts "#{current_player.name} is the current player"
       puts "They have rolled a #{roll}"
-      check_if_exiting_penalty_box(roll)
+      handle_penalty_box(roll)
       return if current_player.in_penalty_box
 
-      current_player.go_to_next_location(roll)
+      current_player.move(roll)
       puts "#{current_player.name}'s new location is #{current_player.place}"
       puts "The category is #{current_category}"
       ask_question
     end
 
     def was_correctly_answered
-      unless current_player.in_penalty_box
-        puts "Answer was correct!!!!"
-        current_player.gets_money
-        puts "#{current_player.name} now has #{current_player.purse} Gold Coins."
-      end
+      return if current_player.in_penalty_box
+
+      puts "Answer was correct!!!!"
+      current_player.earns_money
+      puts "#{current_player.name} now has #{current_player.purse} Gold Coins."
+    ensure
       advance_to_next_player
-      !winner?
+      has_winner?
     end
 
     def wrong_answer
       puts "Question was incorrectly answered"
-      puts "#{current_player.name} was sent to the penalty box"
       current_player.enter_penalty_box
+      puts "#{current_player.name} was sent to the penalty box"
+    ensure
       advance_to_next_player
-      !winner?
+      has_winner?
     end
 
     private
 
-    def check_if_exiting_penalty_box(roll)
+    def handle_penalty_box(roll)
       return unless current_player.in_penalty_box
 
-      if roll.even?
-        puts "#{current_player.name} is not getting out of the penalty box"
-      else
+      is_getting_out_of_penalty_box = roll.odd?
+      if is_getting_out_of_penalty_box
         puts "#{current_player.name} is getting out of the penalty box"
         player.leave_penalty_box
+      else
+        puts "#{current_player.name} is not getting out of the penalty box"
       end
     end
 
@@ -111,7 +113,7 @@ module UglyTrivia
       puts questions.next_question(current_category)
     end
 
-    def winner?
+    def has_winner?
       players.any?(&:winner?)
     end
 
