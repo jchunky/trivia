@@ -79,7 +79,7 @@ module UglyTrivia
       puts "#{current_player.name} now has #{current_player.purse} Gold Coins."
     ensure
       advance_to_next_player
-      has_winner?
+      return has_winner?
     end
 
     def wrong_answer
@@ -88,7 +88,7 @@ module UglyTrivia
       puts "#{current_player.name} was sent to the penalty box"
     ensure
       advance_to_next_player
-      has_winner?
+      return has_winner?
     end
 
     private
