@@ -19,6 +19,15 @@ module UglyTrivia
     def winner?
       purse >= 6
     end
+
+    def go_to_next_location(roll)
+      self.place += roll
+      self.place %= 12
+    end
+
+    def current_category
+      Questions::CATEGORIES[place % 4]
+    end
   end
 
   class Questions
@@ -57,8 +66,7 @@ module UglyTrivia
       check_if_exiting_penalty_box(roll)
       return if current_player.in_penalty_box
 
-      current_player.place += roll
-      current_player.place %= 12
+      current_player.go_to_next_location(roll)
       puts "#{current_player.name}'s new location is #{current_player.place}"
       puts "The category is #{current_category}"
       ask_question
@@ -103,12 +111,12 @@ module UglyTrivia
       puts questions.next_question(current_category)
     end
 
-    def current_category
-      Questions::CATEGORIES[current_player.place % 4]
-    end
-
     def winner?
       players.any?(&:winner?)
+    end
+
+    def current_category
+      current_player.current_category
     end
 
     def current_player
