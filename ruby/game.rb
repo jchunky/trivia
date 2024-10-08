@@ -81,7 +81,7 @@ module UglyTrivia
         puts "#{current_player.name} now has #{current_player.purse} Gold Coins."
       end
       next_turn
-      !did_player_win?
+      !game_over?
     end
 
     def wrong_answer
@@ -89,7 +89,7 @@ module UglyTrivia
       puts "#{current_player.name} was sent to the penalty box"
       current_player.enter_penalty_box
       next_turn
-      !did_player_win?
+      !game_over?
     end
 
     private
@@ -119,7 +119,7 @@ module UglyTrivia
       players.first
     end
 
-    def did_player_win?
+    def game_over?
       players.any?(&:win?)
     end
 
