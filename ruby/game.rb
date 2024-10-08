@@ -11,7 +11,8 @@ module UglyTrivia
     end
 
     def category
-      Game::QUESTION_CATEGORIES[index % Game::QUESTION_CATEGORIES.count]
+      categories = Game::QUESTION_CATEGORIES
+      categories[index % categories.count]
     end
 
     def to_s
