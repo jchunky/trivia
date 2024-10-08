@@ -13,6 +13,10 @@ module UglyTrivia
     def category
       Game::QUESTION_CATEGORIES[index % Game::QUESTION_CATEGORIES.count]
     end
+
+    def to_s
+      index.to_s
+    end
   end
 
   class Questions
@@ -113,7 +117,7 @@ module UglyTrivia
 
     def move_player(roll)
       current_player.move_forward(roll)
-      puts "#{current_player.name}'s new location is #{current_player.location.index}"
+      puts "#{current_player.name}'s new location is #{current_player.location}"
       puts "The category is #{current_player.current_category}"
     end
 
