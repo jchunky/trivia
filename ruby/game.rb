@@ -13,7 +13,7 @@ module UglyTrivia
     end
   end
 
-  class Player < Struct.new(:name, :place, :purse, :in_penalty_box)
+  class Player < Struct.new(:name, :location, :purse, :in_penalty_box)
     WINNING_SCORE = 6
     BOARD_SIZE = 12
 
@@ -22,7 +22,7 @@ module UglyTrivia
     end
 
     def move_forward(roll)
-      self.place = (place + roll) % BOARD_SIZE
+      self.location = (location + roll) % BOARD_SIZE
     end
 
     def enter_penalty_box
@@ -46,7 +46,7 @@ module UglyTrivia
     end
 
     def current_category
-      %w[Pop Science Sports Rock][place % 4]
+      %w[Pop Science Sports Rock][location % 4]
     end
   end
 
@@ -96,7 +96,7 @@ module UglyTrivia
 
     def move_player(roll)
       current_player.move_forward(roll)
-      puts "#{current_player.name}'s new location is #{current_player.place}"
+      puts "#{current_player.name}'s new location is #{current_player.location}"
       puts "The category is #{current_player.current_category}"
     end
 
