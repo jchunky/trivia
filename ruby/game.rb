@@ -1,30 +1,55 @@
 module UglyTrivia
   class Questions
-    attr_reader :questions
-
     def initialize
-      @questions = Hash.new(0)
+      @questions = Hash.new { |hash, category| hash[category] = 0 }
     end
 
     def next_question(category)
-      number = questions[category]
-      question = "#{category} Question #{number}"
-      questions[category] += 1
-      question
+      question_number = @questions[category]
+      @questions[category] += 1
+      "#{category} Question #{question_number}"
     end
   end
 
-  class Player < Struct.new(:name, :place, :purse, :in_penalty_box)
+  class Player
+    WINNING_SCORE = 6
+    BOARD_SIZE = 12
+
+    attr_reader :name, :place, :purse, :in_penalty_box
+
     def initialize(name)
-      super(name, 0, 0, false)
+      @name = name
+      @place = 0
+      @purse = 0
+      @in_penalty_box = false
+    end
+
+    def move_forward(roll)
+      @place = (place + roll) % BOARD_SIZE
+    end
+
+    def increase_purse
+      @purse += 1
+    end
+
+    def win?
+      purse >= WINNING_SCORE
+    end
+
+    def enter_penalty_box
+      @in_penalty_box = true
+    end
+
+    def exit_penalty_box
+      @in_penalty_box = false
+    end
+
+    def in_penalty_box?
+      in_penalty_box
     end
   end
 
   class Game
-    MAX_PLAYERS = 6
-    WINNING_SCORE = 6
-    BOARD_SIZE = 12
-
     attr_reader :questions, :players
 
     def initialize
@@ -35,12 +60,8 @@ module UglyTrivia
 
     def add(player_name)
       @players << Player.new(player_name)
-      players.count
-
       puts "#{player_name} was added"
       puts "They are player number #{players.count}"
-
-      true
     end
 
     def roll(roll)
@@ -61,7 +82,7 @@ module UglyTrivia
       end
 
       puts "Answer was correct!!!!"
-      current_player.purse += 1
+      current_player.increase_purse
       puts "#{current_player_name} now has #{current_player.purse} Gold Coins."
     ensure
       next_turn
@@ -71,7 +92,7 @@ module UglyTrivia
     def wrong_answer
       puts "Question was incorrectly answered"
       puts "#{current_player_name} was sent to the penalty box"
-      current_player.in_penalty_box = true
+      current_player.enter_penalty_box
     ensure
       next_turn
       return !did_player_win?
@@ -84,11 +105,11 @@ module UglyTrivia
     end
 
     def in_penalty_box?
-      current_player.in_penalty_box
+      current_player.in_penalty_box?
     end
 
     def move_player(roll)
-      current_player.place = (current_player.place + roll) % BOARD_SIZE
+      current_player.move_forward(roll)
       puts "#{current_player_name}'s new location is #{current_player.place}"
       puts "The category is #{current_category}"
     end
@@ -106,8 +127,7 @@ module UglyTrivia
     end
 
     def ask_question
-      question = questions.next_question(current_category)
-      puts question
+      puts questions.next_question(current_category)
     end
 
     def current_player
@@ -119,7 +139,7 @@ module UglyTrivia
     end
 
     def did_player_win?
-      players.any? { |player| player.purse >= WINNING_SCORE }
+      current_player.win?
     end
 
     def next_turn
