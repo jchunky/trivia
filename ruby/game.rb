@@ -1,4 +1,20 @@
 module UglyTrivia
+  class Location
+    attr_reader :index
+
+    def initialize
+      @index = 0
+    end
+
+    def move_forward(roll)
+      @index = (index + roll) % Game::BOARD_SIZE
+    end
+
+    def category
+      Game::QUESTION_CATEGORIES[index % Game::QUESTION_CATEGORIES.count]
+    end
+  end
+
   class Questions
     attr_reader :questions
 
@@ -14,15 +30,12 @@ module UglyTrivia
   end
 
   class Player < Struct.new(:name, :location, :purse, :in_penalty_box)
-    WINNING_SCORE = 6
-    BOARD_SIZE = 12
-
     def initialize(name)
-      super(name, 0, 0, false)
+      super(name, Location.new, 0, false)
     end
 
     def move_forward(roll)
-      self.location = (location + roll) % BOARD_SIZE
+      location.move_forward(roll)
     end
 
     def enter_penalty_box
@@ -38,7 +51,7 @@ module UglyTrivia
     end
 
     def win?
-      purse >= WINNING_SCORE
+      purse >= Game::WINNING_SCORE
     end
 
     def in_penalty_box?
@@ -46,11 +59,15 @@ module UglyTrivia
     end
 
     def current_category
-      %w[Pop Science Sports Rock][location % 4]
+      location.category
     end
   end
 
   class Game
+    BOARD_SIZE = 12
+    QUESTION_CATEGORIES = %w[Pop Science Sports Rock]
+    WINNING_SCORE = 6
+
     attr_reader :questions, :players
 
     def initialize
@@ -96,7 +113,7 @@ module UglyTrivia
 
     def move_player(roll)
       current_player.move_forward(roll)
-      puts "#{current_player.name}'s new location is #{current_player.location}"
+      puts "#{current_player.name}'s new location is #{current_player.location.index}"
       puts "The category is #{current_player.current_category}"
     end
 
