@@ -102,7 +102,7 @@ module UglyTrivia
         current_player.increase_purse
         puts "#{current_player.name} now has #{current_player.purse} Gold Coins."
       end
-      next_turn
+      next_player
       !game_over?
     end
 
@@ -110,7 +110,7 @@ module UglyTrivia
       puts "Question was incorrectly answered"
       puts "#{current_player.name} was sent to the penalty box"
       current_player.enter_penalty_box
-      next_turn
+      next_player
       !game_over?
     end
 
@@ -137,16 +137,20 @@ module UglyTrivia
       puts questions.next_question(current_player.current_category)
     end
 
-    def current_player
-      players.first
-    end
-
     def game_over?
       players.any?(&:win?)
     end
 
-    def next_turn
-      players.rotate!
+    def current_player
+      player_turn_order.peek
+    end
+
+    def next_player
+      player_turn_order.next
+    end
+
+    def player_turn_order
+      @player_turn_order ||= players.cycle
     end
   end
 end
