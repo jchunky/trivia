@@ -77,8 +77,6 @@ module UglyTrivia
       end
     end
 
-  private
-
     def ask_question
       puts @pop_questions.shift if current_category == 'Pop'
       puts @science_questions.shift if current_category == 'Science'
