@@ -15,9 +15,7 @@ module UglyTrivia
       categories[index % categories.count]
     end
 
-    def to_s
-      index.to_s
-    end
+    def to_s = index.to_s
   end
 
   class Questions
@@ -132,9 +130,6 @@ module UglyTrivia
     def game_over? = players.any?(&:win?)
     def current_player = player_turn_order.peek
     def next_player = player_turn_order.next
-
-    def player_turn_order
-      @player_turn_order ||= players.cycle
-    end
+    def player_turn_order = @player_turn_order ||= players.cycle
   end
 end
