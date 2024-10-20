@@ -55,17 +55,9 @@ module UglyTrivia
       self.purse += 1
     end
 
-    def win?
-      purse >= Game::WINNING_SCORE
-    end
-
-    def in_penalty_box?
-      in_penalty_box
-    end
-
-    def current_category
-      location.category
-    end
+    def win? = purse >= Game::WINNING_SCORE
+    def in_penalty_box? = in_penalty_box
+    def current_category = location.category
   end
 
   class Game
@@ -137,17 +129,9 @@ module UglyTrivia
       puts questions.next_question(current_player.current_category)
     end
 
-    def game_over?
-      players.any?(&:win?)
-    end
-
-    def current_player
-      player_turn_order.peek
-    end
-
-    def next_player
-      player_turn_order.next
-    end
+    def game_over? = players.any?(&:win?)
+    def current_player = player_turn_order.peek
+    def next_player = player_turn_order.next
 
     def player_turn_order
       @player_turn_order ||= players.cycle
