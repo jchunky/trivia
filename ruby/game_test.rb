@@ -4,7 +4,7 @@ require_relative "game"
 
 class GameTest < Test::Unit::TestCase
   def test_it_works
-    game = UglyTrivia::Game.new
+    game     = UglyTrivia::Game.new
     expected = <<~STRING
       Chet was added
       They are player number 1
@@ -163,7 +163,7 @@ class GameTest < Test::Unit::TestCase
 
   def capture(&block)
     old_stdout = $stdout
-    $stdout = StringIO.new
+    $stdout    = StringIO.new
     block.call
     $stdout.string
   ensure
