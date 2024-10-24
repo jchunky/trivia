@@ -26,7 +26,7 @@ module UglyTrivia
     end
 
     def next_question(category)
-      question_number      = questions[category]
+      question_number = questions[category]
       questions[category] += 1
       "#{category} Question #{question_number}"
     end
@@ -53,20 +53,20 @@ module UglyTrivia
       self.purse += 1
     end
 
-    def win?             = purse >= Game::WINNING_SCORE
-    def in_penalty_box?  = in_penalty_box
+    def win? = purse >= Game::WINNING_SCORE
+    def in_penalty_box? = in_penalty_box
     def current_category = location.category
   end
 
   class Game
-    BOARD_SIZE          = 12
+    BOARD_SIZE = 12
     QUESTION_CATEGORIES = %w[Pop Science Sports Rock]
-    WINNING_SCORE       = 6
+    WINNING_SCORE = 6
 
     attr_reader :questions, :players
 
     def initialize
-      @players   = []
+      @players = []
       @questions = Questions.new
     end
 
@@ -127,9 +127,9 @@ module UglyTrivia
       puts questions.next_question(current_player.current_category)
     end
 
-    def game_over?        = players.any?(&:win?)
-    def current_player    = player_turn_order.peek
-    def next_player       = player_turn_order.next
+    def game_over? = players.any?(&:win?)
+    def current_player = player_turn_order.peek
+    def next_player = player_turn_order.next
     def player_turn_order = @player_turn_order ||= players.cycle
   end
 end
